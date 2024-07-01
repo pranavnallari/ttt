@@ -1,5 +1,5 @@
 all:
-	gcc ttt.c -lncurses -o ttt -Wall -Wextra -pedantic
+	gcc ttt.c -o ttt -lncurses -Wall -Wextra -pedantic
 
 clean:
 	rm -rf ttt && clear
