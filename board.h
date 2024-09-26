@@ -6,17 +6,11 @@
 #include <ncurses.h>
 #include <sys/ioctl.h>
 
-
 #define X 'X'
 #define O 'O'
 
 int x = 17;
 int y = 8;
-/*
-Winning Move: Check if the AI can win on the next move (two of its symbols in a row).
-Blocking Move: Check if the AI needs to block the player from winning on the next move.
-Fallback to Random Move: If neither a winning move nor a blocking move is possible, make a random move.
-*/
 
 char arr[3][3];
 
@@ -50,7 +44,7 @@ bool checkIfEmpty(int i, int j) {
 void exit_message(const char* message) {
     clear();
     system("clear");
-    mvprintw(10, 7, message);
+    mvprintw(10, 7, "%s", message);
     refresh();
 }
 
@@ -110,12 +104,14 @@ bool checkForDraw() {
     }
 }
 
-void AI() {
+void AI_Rand() {
     int i = rand() % 3;
     int j = rand() % 3;
-    if (!checkIfEmpty(i, j)) AI();
+    if (!checkIfEmpty(i, j)) AI_Rand();
     else arr[i][j] = game.AI;
 }
+
+void AI();
 
 void AIMove(WINDOW* win) {
     AI();
@@ -174,7 +170,7 @@ WINDOW* AllInit() {
     initscr();
     noecho();
     board_init();
-    
+
     struct winsize size;
     if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) == -1) {
         perror("ioctl");
@@ -193,10 +189,11 @@ WINDOW* AllInit() {
     display_board(win);
     wmove(win, y, x);
     wrefresh(win);
-    
+
     return win;
 }
 
+// change here
 void start_select_symbol() {
     system("clear");
     initscr();
@@ -249,4 +246,3 @@ void start_select_symbol() {
     endwin();
     system("clear");
 }
-

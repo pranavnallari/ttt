@@ -1,4 +1,4 @@
-#include "board.h"
+#include "AI.h"
 
 void player_move(WINDOW* win) {
     int ch;
@@ -26,13 +26,14 @@ void player_move(WINDOW* win) {
         } else if (ch == '\n' || ch == '\r') {
             int col = (x - 17) / 4;
             int row = (y - 8) / 2;
+            if (!checkIfEmpty(row, col)) continue;
             arr[row][col] = game.Player;
             gameEndCheck();
             AIMove(win);
             gameEndCheck();
             display_board(win);
             wmove(win, y, x);
-            wrefresh(win);  
+            wrefresh(win);
         }
     }
 }
