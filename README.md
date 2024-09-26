@@ -5,7 +5,8 @@ This is a simple implementation of the classic game Tic-Tac-Toe, designed to run
 ## Features
 
 - Player vs AI Tic-Tac-Toe game.
-- Simple AI opponent that makes random moves.
+- Intelligent AI opponent that makes intelligent moves.
+- AI can now perform a winning move or a blocking move or a heuristic move.
 - Uses NCurses for terminal graphics.
 - Supports selecting X or O for the player.
 
