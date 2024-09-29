@@ -1,3 +1,6 @@
+// this is a simple AI that can play intelligent moves based on the state
+// but as you play multiple games, you can see that it becomes very predictable.
+
 #include "board.h"
 
 #define EMPTY ' '

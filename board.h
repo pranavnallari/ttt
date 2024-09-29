@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <ncurses.h>
+#include <limits.h>
 #include <sys/ioctl.h>
 
 #define X 'X'
@@ -45,44 +46,45 @@ void exit_message(const char* message) {
     clear();
     system("clear");
     mvprintw(10, 7, "%s", message);
+
     refresh();
 }
 
-bool checkForWin() {
+bool checkForWin(char *win) {
     // Check rows and columns
     for (int i = 0; i < 3; i++) {
         // Check rows
         if (arr[i][0] == game.AI && arr[i][1] == game.AI && arr[i][2] == game.AI) {
-            exit_message("You Lost");
+            *win = game.AI;
             return true;
         } else if (arr[i][0] == game.Player && arr[i][1] == game.Player && arr[i][2] == game.Player) {
-            exit_message("You Won");
+            *win = game.Player;
             return true;
         }
 
         // Check columns
         if (arr[0][i] == game.AI && arr[1][i] == game.AI && arr[2][i] == game.AI) {
-            exit_message("You Lost\n");
+            *win = game.AI;
             return true;
         } else if (arr[0][i] == game.Player && arr[1][i] == game.Player && arr[2][i] == game.Player) {
-            exit_message("You Won\n");
+            *win = game.Player;
             return true;
         }
     }
 
     // Check diagonals
     if (arr[0][0] == game.AI && arr[1][1] == game.AI && arr[2][2] == game.AI){
-        exit_message("You Lost\n");
+        *win = game.AI;
         return true;
     } else if (arr[0][0] == game.Player && arr[1][1] == game.Player && arr[2][2] == game.Player) {
-        exit_message("You Won\n");
+        *win = game.Player;
         return true;
     }
     if (arr[0][2] == game.AI && arr[1][1] == game.AI && arr[2][0] == game.AI) {
-        exit_message("You Lost\n");
+        *win = game.AI;
         return true;
     } else if (arr[0][2] == game.Player && arr[1][1] == game.Player && arr[2][0] == game.Player) {
-        exit_message("You Won\n");
+        *win = game.Player;
         return true;
     }
 
@@ -117,11 +119,14 @@ void AIMove(WINDOW* win) {
     AI();
     display_board(win);
     refresh();
-    wrefresh(win);
+    wrefresh(win);   
 }
 
 void gameEndCheck() {
-    if(checkForWin()) {
+    char status;
+    if(checkForWin(&status)) {
+        getch();
+        exit_message(status == game.Player ? "You Win" : "You Lost");
         getch();
         endwin();
         exit(0);
@@ -189,7 +194,7 @@ WINDOW* AllInit() {
     display_board(win);
     wmove(win, y, x);
     wrefresh(win);
-
+    keypad(win, true);
     return win;
 }
 
@@ -208,7 +213,7 @@ void start_select_symbol() {
     wrefresh(menuwin);
     keypad(menuwin, true);
 
-    int highlight = 0;
+    int highlight = 1;
     char *choices[] = {"Select Your Symbol", "Select X (goes first)", "Select O"};
     int choice = 0;
     while (1) {
@@ -224,7 +229,7 @@ void start_select_symbol() {
         switch (choice) {
             case KEY_UP:
                 highlight--;
-                if (highlight < 0) highlight = 0;
+                if (highlight < 1) highlight = 1;
                 break;
             case KEY_DOWN:
                 highlight++;
